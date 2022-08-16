@@ -4,6 +4,7 @@ from loader import bot, logger
 from config_data import config
 from database.models import user
 from keyboards.inline.keyboard import keyboard_commands
+from handlers.default_handlers import lowprice_highprice
 import commands
 import telebot
 from dotenv import load_dotenv, find_dotenv
