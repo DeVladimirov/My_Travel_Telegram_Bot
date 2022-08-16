@@ -66,31 +66,35 @@ COMMAND_LIST = [START, HELP, LOWPRICE, HIGHPRICE, BESTDEAL, HISTORY]
 WELCOME_LIST = ['привет', 'hello', 'как дела', 'how are you', 'пока', 'goodbye']
 
 
-HOTEL_SHOW_RU = "*Название:* {}\n" \
-                "*Адрес:* {}\n" \
-                "*Расстояние от центра:* {}\n" \
-                "*Цена за сутки:* {} {}\n" \
-                "*Цена за период:* {:,} {}\n" \
-                "*Количество звёзд:* {}\n" \
+HOTEL_SHOW_RU = ("*Название:* {}\n"
+                "*Адрес:* {}\n"
+                "*Расстояние от центра:* {}\n"
+                "*Цена за сутки:* {} {}\n"
+                "*Цена за период:* {:,} {}\n"
+                "*Количество звёзд:* {}\n"
                 "*Ссылка:* {}"
+                 )
 
-HOTEL_SHOW_EN = "*Name:* {}\n" \
-                "*Address:* {}\n" \
-                "*Distance  to the center:* {}\n" \
-                "*Price per day:* {} {}\n" \
-                "*Price per period:* {:,} {}\n" \
-                "*Star rating:* {}\n" \
+HOTEL_SHOW_EN = ("*Name:* {}\n"
+                "*Address:* {}\n"
+                "*Distance  to the center:* {}\n"
+                "*Price per day:* {} {}\n"
+                "*Price per period:* {:,} {}\n"
+                "*Star rating:* {}\n"
                 "*Link:* {}"
+                 )
 
 
-HISTORY_COMMAND_RU = "Дата и время: {}\n" \
-                     "Наименование команды: {}\n" \
-                     "Город: {}\n" \
-                     "Дата проживания с: {}\n" \
+HISTORY_COMMAND_RU = ("Дата и время: {}\n"
+                     "Наименование команды: {}\n"
+                     "Город: {}\n"
+                     "Дата проживания с: {}\n"
                      "Дата проживания по: {}\n"
+                      )
 
-HISTORY_COMMAND_EN = "Date and time: {}\n" \
-                     "Command name: {}\n" \
-                     "City: {}\n" \
-                     "Date of residence from: {}\n" \
+HISTORY_COMMAND_EN = ("Date and time: {}\n"
+                     "Command name: {}\n"
+                     "City: {}\n"
+                     "Date of residence from: {}\n"
                      "Date of residence by: {}\n"
+                      )
