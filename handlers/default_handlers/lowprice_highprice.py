@@ -10,8 +10,8 @@ from loader import bot, logger, exception_handler
 from database.models import user, DataBaseModel, Hotel
 import commands
 import settings
-import bestdeal
-from api_requests.request_api import request_search, request_property_list, request_get_photo, request_bestdeal
+from . import bestdeal
+from req_api.api_req import request_search, request_property_list, request_get_photo, request_bestdeal
 from keyboards import keyboards_text
 from keyboards.inline import keyboard, calendar
 from telebot.types import CallbackQuery, InputMediaPhoto, Message
@@ -414,7 +414,7 @@ def photo_append(call: CallbackQuery, result_photo: List, hotel_show: str) -> Tu
             if check_status_code(response):
                 index += 1
                 media_massive.append(
-                    InputMediaPhoto(photo, caption=hotel_show if index == 1 else '', parse_mode='Markdown')
+                    InputMediaPhoto(photo, caption=hotel_show if index == 1 else '', parse_mode='Markdown'))
 
 def check_status_code(response: Response) -> Optional[bool]:
     """

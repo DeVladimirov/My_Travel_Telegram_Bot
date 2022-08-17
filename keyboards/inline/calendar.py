@@ -5,7 +5,7 @@ from telegram_bot_calendar import DetailedTelegramCalendar
 from keyboards.keyboards_text import LSTEP
 import commands
 from datetime import date, timedelta, datetime
-from handlers import lowprice_highprice
+from handlers.default_handlers import lowprice_highprice
 
 class CustCalendar(DetailedTelegramCalendar):
     """

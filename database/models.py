@@ -116,4 +116,163 @@ class Hotel:
         )
 
 class DataBaseModel:
-    pass
+    """
+    Класс, содержащий в себе методы запросов к БД
+    """
+
+    @classmethod
+    def _init_user_tables(cls) -> None:
+        """
+        Класс-метод создающий базу данных и таблицу пользователя, в случае её отсутствия
+        :return: None
+        """
+        with sqlite3.connect('hotel_database.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT name FROM 'sqlite_master' "
+                "WHERE type='table' AND name='table_user';"
+            )
+            exists = cursor.fetchone()
+            if not exists:
+                cursor.executescript(
+                    "CREATE TABLE 'table_user' ("
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    "command_time TEXT NOT NULL,"
+                    "user_id INTEGER NOT NULL, "
+                    "command TEXT NOT NULL,"
+                    "city TEXT NOT NULL,"
+                    "currency TEXT NOT NULL,"
+                    "date_in TEXT NOT NULL,"
+                    "date_out TEXT NOT NULL,"
+                    "min_distance REAL NOT NULL,"
+                    "max_distance REAL NOT NULL,"
+                    "price_min INTEGER NOT NULL,"
+                    "price_max INTEGER NOT NULL)"
+                )
+        cls._init_hotel_tables()
+
+    @classmethod
+    def _init_hotel_tables(cls) -> None:
+        """
+        Класс-метод создающий базу данных и таблицу отелей, в случае её отсутствия
+        :return: None
+        """
+        with sqlite3.connect('hotel_database.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT name FROM 'sqlite_master' "
+                "WHERE type='table' AND name='table_hotel';"
+            )
+            exists = cursor.fetchone()
+            if not exists:
+                cursor.executescript(
+                    "CREATE TABLE 'table_hotel' ("
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    "user_id INTEGER NOT NULL, "
+                    "hotel_info TEXT NOT NULL,"
+                    "photo TEXT NOT NULL,"
+                    "command_id INTEGER NOT NULL,"
+                    "FOREIGN KEY (command_id) REFERENCES table_user(id) ON DELETE CASCADE)"
+                )
+            cursor.executescript("PRAGMA foreign_keys = ON;")
+
+    @classmethod
+    def insert_user(cls, user_tuple: tuple) -> None:
+        """
+        Класс-метод записывающий данные пользователя в БД
+        :param user_tuple: tuple
+        :return: None
+        """
+        with sqlite3.connect('hotel_database.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO 'table_user' ("
+                "command_time, user_id, command, city, currency, date_in, "
+                "date_out, min_distance, max_distance, price_min, price_max) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", user_tuple
+            )
+
+    @classmethod
+    def insert_hotel(cls, user_hotel: Hotel) -> None:
+        """
+        Класс-метод записывающий данные отеля в БД
+        :param user_hotel: Hotel
+        :return: None
+        """
+        with sqlite3.connect('hotel_database.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT id FROM 'table_user' "
+                           "WHERE user_id = {} ORDER BY id DESC ".format(user.user.user_id))
+            command_id, *_ = cursor.fetchone()
+            user_hotel.command_id = command_id
+            cursor.execute(
+                "INSERT INTO 'table_hotel' ("
+                "user_id, hotel_info, photo, command_id) "
+                "VALUES (?, ?, ?, ?)", user_hotel.get_tuple()
+            )
+
+    @classmethod
+    def delete_history(cls, history_user: int) -> None:
+        """
+        Класс-метод удаляющий из базы данных записи текущего пользователя
+        :param history_user: int
+        :return: None
+        """
+        with sqlite3.connect('hotel_database.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "DELETE FROM 'table_user' WHERE user_id = ?;", (history_user, )
+            )
+            cursor.execute(
+                "DELETE FROM 'table_hotel' WHERE user_id = ?;", (history_user,)
+            )
+
+    @classmethod
+    def select_history_user(cls, history_user: int) -> List[tuple]:
+        """
+        Класс-метод возвращающий из базы данных список кортежей с информацией по пользователю.
+        :param history_user: int
+        :return: List[tuple]
+        """
+        with sqlite3.connect('hotel_database.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT id, command_time, command, city, date_in, date_out "
+                "FROM 'table_user' WHERE user_id = ?", (history_user, )
+            )
+            user_command = cursor.fetchall()
+            return user_command
+
+    @classmethod
+    def select_history_user_five(cls, history_user: int) -> List[tuple]:
+        """
+        Класс-метод возвращающий из базы данных список кортежей с информацией по пользователю,
+        отсортированной в обратном порядке для вывода последних пяти записей.
+        :param history_user: int
+        :return: List[tuple]
+        """
+        with sqlite3.connect('hotel_database.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT id, command_time, command, city, date_in, date_out "
+                "FROM 'table_user' WHERE user_id = ? ORDER BY id DESC ", (history_user, )
+            )
+            user_command = cursor.fetchall()
+            return user_command
+
+    @classmethod
+    def select_history_hotel(cls, history_id: int) -> List[tuple]:
+        """
+        Класс-метод возвращающий из базы данных список кортежей с информацией по отелям,
+        запрошенным ранее пользователем
+        :param history_id: int
+        :return: List[tuple]
+        """
+        with sqlite3.connect('hotel_database.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT hotel_info, photo "
+                "FROM 'table_hotel' WHERE command_id = ?", (history_id, ))
+            user_hotels = cursor.fetchall()
+            return user_hotels
+
