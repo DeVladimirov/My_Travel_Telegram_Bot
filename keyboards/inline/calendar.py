@@ -1,7 +1,7 @@
 from telebot.types import CallbackQuery
 from database.models import user
 from loader import bot, logger, exception_handler
-from telegram_bot_calendar import DetailedTelegramCalendar
+from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
 from keyboards.keyboards_text import LSTEP
 import commands
 from datetime import date, timedelta, datetime

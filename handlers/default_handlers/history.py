@@ -75,7 +75,7 @@ def callback_history_showing(call: CallbackQuery) -> None:
             )
             user.edit('bot_message', bot_message)
     else:
-            user_command = DataBaseModel.select_history_user_five(call.from_user.id)
+        user_command = DataBaseModel.select_history_user_five(call.from_user.id)
         if user_command:
             if len(user_command) > 5:
                 user_command = user_command[:5]

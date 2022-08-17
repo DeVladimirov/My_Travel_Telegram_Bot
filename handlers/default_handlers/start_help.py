@@ -6,6 +6,7 @@ from database.models import user
 from keyboards.inline.keyboard import keyboard_commands
 from handlers.default_handlers import lowprice_highprice
 import commands
+from handlers.default_handlers import history
 import telebot
 from dotenv import load_dotenv, find_dotenv
 
