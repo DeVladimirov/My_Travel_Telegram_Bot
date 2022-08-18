@@ -1,4 +1,4 @@
-import handlers
+from handlers.default_handlers import bestdeal, history, start_help, lowprice_highprice
 from database.models import DataBaseModel
 from loader import bot, logger
 
