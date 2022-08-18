@@ -11,7 +11,7 @@ else:
     load_dotenv()
 
 TOKEN = os.environ.get('BOT_TOKEN')
-API_KEY = os.environ.get('API_KEY')
+RAPID_API_KEY = os.environ.get('RAPID_API_KEY')
 
 URL_SEARCH = 'https://hotels4.p.rapidapi.com/locations/v2/search'
 URL_PROPERTY_LIST = 'https://hotels4.p.rapidapi.com/properties/list'
@@ -20,7 +20,7 @@ URL_HOTEL = 'https://www.hotels.com/ho{}'
 
 HEADERS = {
     'X-RapidAPI-Host': 'hotels4.p.rapidapi.com',
-    'X-RapidAPI-Key': API_KEY
+    'X-RapidAPI-Key': RAPID_API_KEY
 }
 
 

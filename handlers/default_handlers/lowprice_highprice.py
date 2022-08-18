@@ -69,19 +69,20 @@ def search_city(message: Message) -> None:
         if check_status_code(response):
             pattern_city_group = r'(?<="CITY_GROUP",).+?[\]]'
             find_cities = re.findall(pattern_city_group, response.text)
-            if len(find_cities[0]) > 20:
-                pattern_dest = r'(?<="destinationId":")\d+'
-                destination = re.findall(pattern_dest, find_cities[0])
-                pattern_city = r'(?<="name":")\w+[\s, \w]\w+'
-                city = re.findall(pattern_city, find_cities[0])
-                city_list = list(zip(destination, city))
-                bot_message = bot.send_message(
-                    message.from_user.id, commands.CORRECTION, reply_markup=keyboard.keyboards_city(city_list)
-                )
-                user.edit('bot_message', bot_message)
-            else:
-                bot.send_message(message.from_user.id, commands.INCORRECT_CITY)
-                choice_city(message)
+            for i in range(len(find_cities)):
+                if len(find_cities[i]) > 20:
+                    pattern_dest = r'(?<="destinationId":")\d+'
+                    destination = re.findall(pattern_dest, find_cities[0])
+                    pattern_city = r'(?<="name":")\w+[\s, \w]\w+'
+                    city = re.findall(pattern_city, find_cities[0])
+                    city_list = list(zip(destination, city))
+                    bot_message = bot.send_message(
+                        message.from_user.id, commands.CORRECTION, reply_markup=keyboard.keyboards_city(city_list)
+                    )
+                    user.edit('bot_message', bot_message)
+                else:
+                    bot.send_message(message.from_user.id, commands.INCORRECT_CITY)
+                    choice_city(message)
         else:
             bot.send_message(message.from_user.id, commands.REQUEST_ERROR)
             choice_city(message)
