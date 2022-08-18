@@ -3,7 +3,7 @@ from database.models import user
 from loader import bot, logger, exception_handler
 from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
 from keyboards.keyboards_text import LSTEP
-import commands
+from states import commands
 from datetime import date, timedelta, datetime
 from handlers.default_handlers import lowprice_highprice
 
@@ -82,3 +82,35 @@ def date_out(call: CallbackQuery, result: datetime) -> None:
         call.from_user.id, f"Выберите {LSTEP[second_step]}:", reply_markup=second_calendar
     )
     user.edit('bot_message', bot_message)
+
+
+@exception_handler
+@bot.callback_query_handler(func=CustCalendar.func(calendar_id=15))
+def callback_second_calendar(call: CallbackQuery) -> None:
+    """
+    Функция обработчик inline-календаря. Реагирует только на календарь с id = 15.
+    После обработки пользовательской информации, перенаправляет в функцию choice_photo,
+    файла lowprice_highprice.
+    :param call: CallbackQuery
+    :return: None
+    """
+    logger.info(str(call.from_user.id))
+    min_date = user.user.date_in + timedelta(days=1)
+    result, key, step = CustCalendar(
+        calendar_id=15,
+        locale='ru',
+        min_date=min_date,
+        max_date=min_date + timedelta(days=180)
+    ).process(call.data)
+    if not result and key:
+        bot_message = bot.edit_message_text(
+            f"Выберите {LSTEP[step]}:", call.message.chat.id, call.message.message_id, reply_markup=key
+        )
+        user.edit('bot_message', bot_message)
+    elif result:
+        bot.edit_message_text(f"Дата выезда {result}", call.message.chat.id, call.message.message_id)
+        day_period = int(str(result - user.user.date_in).split()[0])
+        user.edit('day_period', day_period)
+        user.edit('date_in', datetime.strftime(user.user.date_in, '%Y-%m-%d'))
+        user.edit('date_out', datetime.strftime(result, '%Y-%m-%d'))
+        lowprice_highprice.choice_photo(call)

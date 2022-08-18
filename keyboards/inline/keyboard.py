@@ -2,7 +2,7 @@
 from typing import List
 from telebot.types import InlineKeyboardMarkup
 from keyboards import keyboards_text
-import commands
+from states import commands
 from telebot import types
 
 

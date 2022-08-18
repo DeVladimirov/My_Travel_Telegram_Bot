@@ -5,7 +5,7 @@ from typing import Callable
 from requests import ReadTimeout
 from log_config import cust_logger
 from database.models import user
-import commands
+from states import commands
 
 storage = StateMemoryStorage()
 bot = TeleBot(token=config.BOT_TOKEN, state_storage=storage)

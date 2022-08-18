@@ -1,11 +1,10 @@
 import re
 import json
-import settings
 from typing import List, Dict, Union
 from telebot.types import Message, CallbackQuery
 from database.models import user
 from loader import bot, logger, exception_handler
-import commands
+from states import commands, settings
 from req_api.api_req import request_bestdeal
 from .lowprice_highprice import count_hotel
 from .start_help import start_bot_com

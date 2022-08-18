@@ -8,8 +8,7 @@ from datetime import datetime
 from keyboards.inline.keyboard import keyboard_commands
 from loader import bot, logger, exception_handler
 from database.models import user, DataBaseModel, Hotel
-import commands
-import settings
+from states import commands, settings
 from . import bestdeal
 from req_api.api_req import request_search, request_property_list, request_get_photo, request_bestdeal
 from keyboards import keyboards_text

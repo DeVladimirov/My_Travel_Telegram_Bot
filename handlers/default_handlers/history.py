@@ -5,7 +5,7 @@ from telebot.types import Message, InputMediaPhoto, CallbackQuery
 from database.models import DataBaseModel, user
 from keyboards.inline.keyboard import keyboard_commands
 from loader import bot, exception_handler
-import commands
+from states import commands
 from keyboards.inline import keyboard
 from keyboards import keyboards_text
 from main import logger

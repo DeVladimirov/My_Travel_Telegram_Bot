@@ -4,8 +4,8 @@ from requests import Response
 from telebot.types import Message, CallbackQuery
 from database.models import user
 from loader import logger, exception_request_handler
-import commands
-from settings import QUERY_SEARCH, URL_SEARCH, HEADERS, QUERY_PROPERTY_LIST, URL_PROPERTY_LIST, QUERY_PHOTO, \
+from states import commands
+from states.settings import QUERY_SEARCH, URL_SEARCH, HEADERS, QUERY_PROPERTY_LIST, URL_PROPERTY_LIST, QUERY_PHOTO, \
     URL_PHOTO, QUERY_BESTDEAL
 
 

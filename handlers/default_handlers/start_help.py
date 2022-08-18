@@ -1,14 +1,10 @@
 from telebot.apihelper import ApiTelegramException
 from telebot.types import Message, CallbackQuery
 from loader import bot, logger
-from config_data import config
 from database.models import user
 from keyboards.inline.keyboard import keyboard_commands
-from handlers.default_handlers import lowprice_highprice
-import commands
-from handlers.default_handlers import history
-import telebot
-from dotenv import load_dotenv, find_dotenv
+from handlers.default_handlers import lowprice_highprice, history
+from states import commands
 
 
 @bot.message_handler(commands=commands.COMMAND)
