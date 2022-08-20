@@ -5,7 +5,7 @@ from telebot.types import Message, InputMediaPhoto, CallbackQuery
 from database.models import DataBaseModel, user
 from keyboards.inline.keyboard import keyboard_commands
 from loader import bot, exception_handler
-from states import commands
+from states import default_answer
 from keyboards.inline import keyboard
 from keyboards import keyboards_text
 from main import logger
@@ -23,7 +23,7 @@ def history_menu(message: Union[Message, CallbackQuery]) -> None:
     else:
         message_text = message.data
     bot_message = bot.send_message(
-        message.from_user.id, commands.HISTORY_MENU_MESSAGE, reply_markup=keyboard.keyboard_history(message_text)
+        message.from_user.id, default_answer.HISTORY_MENU_MESSAGE, reply_markup=keyboard.keyboard_history(message_text)
     )
     user.edit('bot_message', bot_message)
 
@@ -41,14 +41,14 @@ def callback_history_menu(call: CallbackQuery) -> None:
     bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id)
     if call.data == keyboards_text.HISTORY_LIST[0]:
         bot_message = bot.send_message(
-            call.from_user.id, commands.HISTORY_SHOW_MESSAGE, reply_markup=keyboard.keyboard_history(call.data)
+            call.from_user.id, default_answer.HISTORY_SHOW_MESSAGE, reply_markup=keyboard.keyboard_history(call.data)
         )
         user.edit('bot_message', bot_message)
     else:
         DataBaseModel.delete_history(call.from_user.id)
-        bot.send_message(call.from_user.id, commands.HISTORY_DELETE)
+        bot.send_message(call.from_user.id, default_answer.HISTORY_DELETE)
         bot_message = bot.send_message(
-            call.from_user.id, commands.HELP_MESSAGE, reply_markup=keyboard_commands(call.data)
+            call.from_user.id, default_answer.HELP_MESSAGE, reply_markup=keyboard_commands(call.data)
         )
         user.edit('bot_message', bot_message)
 
@@ -69,9 +69,9 @@ def callback_history_showing(call: CallbackQuery) -> None:
         if user_command:
             history_showing(call, user_command)
         else:
-            bot.send_message(call.from_user.id, commands.HISTORY_EMPTY)
+            bot.send_message(call.from_user.id, default_answer.HISTORY_EMPTY)
             bot_message = bot.send_message(
-                call.from_user.id, commands.HELP_MESSAGE, reply_markup=keyboard_commands(call.data)
+                call.from_user.id, default_answer.HELP_MESSAGE, reply_markup=keyboard_commands(call.data)
             )
             user.edit('bot_message', bot_message)
     else:
@@ -82,9 +82,9 @@ def callback_history_showing(call: CallbackQuery) -> None:
             user_command.reverse()
             history_showing(call, user_command)
         else:
-            bot.send_message(call.from_user.id, commands.HISTORY_EMPTY)
+            bot.send_message(call.from_user.id, default_answer.HISTORY_EMPTY)
             bot_message = bot.send_message(
-                call.from_user.id, commands.HELP_MESSAGE, reply_markup=keyboard_commands(call.data)
+                call.from_user.id, default_answer.HELP_MESSAGE, reply_markup=keyboard_commands(call.data)
             )
             user.edit('bot_message', bot_message)
 
@@ -111,10 +111,10 @@ def history_showing(call: CallbackQuery, user_command: List[tuple]) -> None:
             for hotel in hotels:
                 history_hotels_show(call, hotel)
         else:
-            bot.send_message(call.from_user.id, commands.HISTORY_EMPTY_HOTELS)
-    bot.send_message(call.from_user.id, commands.HISTORY_COMPLETE)
+            bot.send_message(call.from_user.id, default_answer.HISTORY_EMPTY_HOTELS)
+    bot.send_message(call.from_user.id, default_answer.HISTORY_COMPLETE)
     bot_message = bot.send_message(
-        call.from_user.id, commands.HELP_MESSAGE, reply_markup=keyboard_commands(call.data)
+        call.from_user.id, default_answer.HELP_MESSAGE, reply_markup=keyboard_commands(call.data)
     )
     user.edit('bot_message', bot_message)
 
@@ -157,5 +157,5 @@ def locale_history(call: CallbackQuery, city: str) -> str:
     logger.info(str(call.from_user.id))
     for sym in city:
         if sym not in string.printable:
-            return commands.HISTORY_COMMAND_RU
-    return commands.HISTORY_COMMAND_EN
+            return default_answer.HISTORY_COMMAND_RU
+    return default_answer.HISTORY_COMMAND_EN

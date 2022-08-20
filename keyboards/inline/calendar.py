@@ -3,7 +3,7 @@ from database.models import user
 from loader import bot, logger, exception_handler
 from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
 from keyboards.keyboards_text import LSTEP
-from states import commands
+from states import default_answer
 from datetime import date, timedelta, datetime
 from handlers.default_handlers import lowprice_highprice
 
@@ -30,7 +30,7 @@ def date_in(call: CallbackQuery) -> None:
         min_date=date.today() + timedelta(days=1),
         max_date=date.today() + timedelta(days=180)
     ).build()
-    bot.send_message(call.from_user.id, commands.DATE_IN)
+    bot.send_message(call.from_user.id, default_answer.DATE_IN)
     bot_message = bot.send_message(call.from_user.id, f"Выберите {LSTEP[step]}:", reply_markup=calendar)
     user.edit('bot_message', bot_message)
 
@@ -77,7 +77,7 @@ def date_out(call: CallbackQuery, result: datetime) -> None:
         min_date=min_date,
         max_date=min_date + timedelta(days=180)
     ).build()
-    bot.send_message(call.from_user.id, commands.DATE_OUT)
+    bot.send_message(call.from_user.id, default_answer.DATE_OUT)
     bot_message = bot.send_message(
         call.from_user.id, f"Выберите {LSTEP[second_step]}:", reply_markup=second_calendar
     )

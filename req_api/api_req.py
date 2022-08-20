@@ -4,8 +4,8 @@ from requests import Response
 from telebot.types import Message, CallbackQuery
 from database.models import user
 from loader import logger, exception_request_handler
-from states import commands
-from states.settings import QUERY_SEARCH, URL_SEARCH, HEADERS, QUERY_PROPERTY_LIST, URL_PROPERTY_LIST, QUERY_PHOTO, \
+from states import default_answer
+from config_data.api_settings import QUERY_SEARCH, URL_SEARCH, HEADERS, QUERY_PROPERTY_LIST, URL_PROPERTY_LIST, QUERY_PHOTO, \
     URL_PHOTO, QUERY_BESTDEAL
 
 
@@ -39,7 +39,7 @@ def request_property_list(call: CallbackQuery) -> Response:
     :return: Response
     """
     logger.info(str(call.from_user.id))
-    if user.user.command == commands.HIGHPRICE[1:]:
+    if user.user.command == default_answer.HIGHPRICE[1:]:
         QUERY_PROPERTY_LIST['sortOrder'] = '-PRICE'
     QUERY_PROPERTY_LIST['destinationId'] = user.user.city_id
     QUERY_PROPERTY_LIST['checkIn'] = user.user.date_in

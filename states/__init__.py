@@ -1,2 +1,1 @@
-from . import commands
-from . import settings
+from . import default_answer

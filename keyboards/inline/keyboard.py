@@ -2,7 +2,7 @@
 from typing import List
 from telebot.types import InlineKeyboardMarkup
 from keyboards import keyboards_text
-from states import commands
+from states import default_answer
 from telebot import types
 
 
@@ -13,14 +13,14 @@ def keyboard_commands(command: str) -> InlineKeyboardMarkup:
     :return: InlineKeyboardMarkup
     """
     keyboard = types.InlineKeyboardMarkup(row_width=2)
-    if command == commands.START:
-        key_help = types.InlineKeyboardButton(text=keyboards_text.KEY_HELP, callback_data=commands.HELP)
+    if command == default_answer.START:
+        key_help = types.InlineKeyboardButton(text=keyboards_text.KEY_HELP, callback_data=default_answer.HELP)
         keyboard.add(key_help)
-    elif command == commands.HELP:
-        key_lowprice = types.InlineKeyboardButton(text=keyboards_text.KEY_LOWPRICE, callback_data=commands.LOWPRICE)
-        key_highprice = types.InlineKeyboardButton(text=keyboards_text.KEY_HIGHPRICE, callback_data=commands.HIGHPRICE)
-        key_bestdeal = types.InlineKeyboardButton(text=keyboards_text.KEY_BESTDEAL, callback_data=commands.BESTDEAL)
-        key_history = types.InlineKeyboardButton(text=keyboards_text.KEY_HISTORY, callback_data=commands.HISTORY)
+    elif command == default_answer.HELP:
+        key_lowprice = types.InlineKeyboardButton(text=keyboards_text.KEY_LOWPRICE, callback_data=default_answer.LOWPRICE)
+        key_highprice = types.InlineKeyboardButton(text=keyboards_text.KEY_HIGHPRICE, callback_data=default_answer.HIGHPRICE)
+        key_bestdeal = types.InlineKeyboardButton(text=keyboards_text.KEY_BESTDEAL, callback_data=default_answer.BESTDEAL)
+        key_history = types.InlineKeyboardButton(text=keyboards_text.KEY_HISTORY, callback_data=default_answer.HISTORY)
         keyboard.add(key_lowprice, key_highprice, key_bestdeal, key_history)
     return keyboard
 
@@ -85,7 +85,7 @@ def keyboard_history(message: str) -> InlineKeyboardMarkup:
     :return: InlineKeyboardMarkup
     """
     keyboard = types.InlineKeyboardMarkup()
-    if message == commands.HISTORY:
+    if message == default_answer.HISTORY:
         keyboard_list = keyboards_text.HISTORY_LIST
     else:
         keyboard_list = keyboards_text.HISTORY_SHOW_LIST

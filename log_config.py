@@ -1,6 +1,5 @@
 import logging
 import logging.config
-
 """
 Файл с конфигурацией логгера
 """

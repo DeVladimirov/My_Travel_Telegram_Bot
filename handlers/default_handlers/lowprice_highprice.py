@@ -8,14 +8,14 @@ from datetime import datetime
 from keyboards.inline.keyboard import keyboard_commands
 from loader import bot, logger, exception_handler
 from database.models import user, DataBaseModel, Hotel
-from states import commands, settings
+from states import default_answer
 from . import bestdeal
 from req_api.api_req import request_search, request_property_list, request_get_photo, request_bestdeal
 from keyboards import keyboards_text
 from keyboards.inline import keyboard, calendar
 from telebot.types import CallbackQuery, InputMediaPhoto, Message
 from .start_help import start_bot_com, check_state_inline_keyboard
-
+from config_data import api_settings
 @exception_handler
 def record_command(message: Union[Message, CallbackQuery]) -> None:
     """
@@ -32,7 +32,7 @@ def record_command(message: Union[Message, CallbackQuery]) -> None:
         user.edit('command', message.data[1:])
     else:
         user.edit('command', message.text[1:])
-    bot.send_message(message.from_user.id, commands.DATA_ON_RUSSIAN_CITIES)
+    bot.send_message(message.from_user.id, default_answer.DATA_ON_RUSSIAN_CITIES)
     choice_city(message)
 
 @exception_handler
@@ -44,7 +44,7 @@ def choice_city(message: Union[Message, CallbackQuery]) -> None:
     :return: None
     """
     logger.info(str(message.from_user.id))
-    bot.send_message(message.from_user.id, commands.CITY)
+    bot.send_message(message.from_user.id, default_answer.CITY)
     if isinstance(message, CallbackQuery):
         bot.register_next_step_handler(message.message, search_city)
     else:
@@ -62,7 +62,7 @@ def search_city(message: Message) -> None:
     :return: None
     """
     logger.info(str(message.from_user.id))
-    if message.text in commands.COMMAND_LIST:
+    if message.text in default_answer.COMMAND_LIST:
         start_bot_com(message)
     else:
         response = request_search(message)
@@ -77,14 +77,14 @@ def search_city(message: Message) -> None:
                     city = re.findall(pattern_city, find_cities[0])
                     city_list = list(zip(destination, city))
                     bot_message = bot.send_message(
-                        message.from_user.id, commands.CORRECTION, reply_markup=keyboard.keyboards_city(city_list)
+                        message.from_user.id, default_answer.CORRECTION, reply_markup=keyboard.keyboards_city(city_list)
                     )
                     user.edit('bot_message', bot_message)
                 else:
-                    bot.send_message(message.from_user.id, commands.INCORRECT_CITY)
+                    bot.send_message(message.from_user.id, default_answer.INCORRECT_CITY)
                     choice_city(message)
         else:
-            bot.send_message(message.from_user.id, commands.REQUEST_ERROR)
+            bot.send_message(message.from_user.id, default_answer.REQUEST_ERROR)
             choice_city(message)
 
 @bot.callback_query_handler(func=lambda call: call.data.isdigit())
@@ -105,10 +105,10 @@ def callback_city(call: CallbackQuery) -> None:
     bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id)
     bot.edit_message_text(
         chat_id=call.message.chat.id, message_id=call.message.message_id,
-        text=commands.CITY_RESULT.format(user.user.city)
+        text=default_answer.CITY_RESULT.format(user.user.city)
     )
     bot_message = bot.send_message(
-        call.from_user.id, commands.CURRENCY, reply_markup=keyboard.keyboards_currency()
+        call.from_user.id, default_answer.CURRENCY, reply_markup=keyboard.keyboards_currency()
     )
     user.edit('bot_message', bot_message)
 
@@ -127,14 +127,14 @@ def callback_currency(call: CallbackQuery) -> None:
     bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id)
     bot.edit_message_text(
         chat_id=call.message.chat.id, message_id=call.message.message_id,
-        text=commands.RESULT_CURRENCY.format(call.data)
+        text=default_answer.RESULT_CURRENCY.format(call.data)
     )
     user.edit('currency', call.data)
-    if user.user.command != commands.BESTDEAL[1:]:
+    if user.user.command != default_answer.BESTDEAL[1:]:
         count_hotel(call)
     else:
-        bot.send_message(call.from_user.id, commands.PRICE_RANGE.format(user.user.currency))
-        bot_message = bot.send_message(call.from_user.id, commands.MIN_PRICE)
+        bot.send_message(call.from_user.id, default_answer.PRICE_RANGE.format(user.user.currency))
+        bot_message = bot.send_message(call.from_user.id, default_answer.MIN_PRICE)
         user.edit('bot_message', bot_message)
         bot.register_next_step_handler(call.message, bestdeal.price_min)
 
@@ -148,7 +148,7 @@ def count_hotel(call: CallbackQuery) -> None:
     """
     logger.info(str(call.from_user.id))
     bot_message = bot.send_message(
-        call.from_user.id, commands.COUNT_HOTEL, reply_markup=keyboard.keyboards_count_photo()
+        call.from_user.id, default_answer.COUNT_HOTEL, reply_markup=keyboard.keyboards_count_photo()
     )
     user.edit('bot_message', bot_message)
 
@@ -160,7 +160,7 @@ def choice_photo(call: CallbackQuery):
     """
     logger.info(str(call.from_user.id))
     bot_message = bot.send_message(
-        call.from_user.id, commands.QUESTION_PHOTO, reply_markup=keyboard.keyboards_photo()
+        call.from_user.id, default_answer.QUESTION_PHOTO, reply_markup=keyboard.keyboards_photo()
     )
     user.edit('bot_message', bot_message)
 
@@ -181,16 +181,16 @@ def callback_photo(call: CallbackQuery) -> None:
     if call.data == 'Да':
         bot.edit_message_text(
             chat_id=call.message.chat.id, message_id=call.message.message_id,
-            text=commands.YES_QUESTION_PHOTO
+            text=default_answer.YES_QUESTION_PHOTO
         )
         bot_message = bot.send_message(
-            call.from_user.id, commands.COUNT_PHOTO, reply_markup=keyboard.keyboards_count_photo()
+            call.from_user.id, default_answer.COUNT_PHOTO, reply_markup=keyboard.keyboards_count_photo()
         )
         user.edit('bot_message', bot_message)
     elif call.data == 'Нет':
         bot.edit_message_text(
             chat_id=call.message.chat.id, message_id=call.message.message_id,
-            text=commands.NO_QUESTION_PHOTO
+            text=default_answer.NO_QUESTION_PHOTO
         )
         load_result(call)
 
@@ -215,14 +215,14 @@ def callback_count_photo(call: CallbackQuery) -> None:
                     user.edit('count_hotel', int(num['text']))
                     bot.edit_message_text(
                         chat_id=call.message.chat.id, message_id=call.message.message_id,
-                        text=commands.RESULT_COUNT_HOTEL.format(user.user.count_hotel)
+                        text=default_answer.RESULT_COUNT_HOTEL.format(user.user.count_hotel)
                     )
                     calendar.date_in(call)
                 else:
                     user.edit('count_photo', int(num['text']))
                     bot.edit_message_text(
                         chat_id=call.message.chat.id, message_id=call.message.message_id,
-                        text=commands.RESULT_COUNT_PHOTO.format(user.user.count_photo)
+                        text=default_answer.RESULT_COUNT_PHOTO.format(user.user.count_photo)
                     )
                     load_result(call)
 
@@ -238,8 +238,8 @@ def load_result(call: CallbackQuery) -> None:
     """
     logger.info(str(call.from_user.id))
     user.edit('date', datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S'))
-    bot.send_message(call.from_user.id, commands.LOAD_RESULT)
-    if user.user.command == commands.BESTDEAL[1:]:
+    bot.send_message(call.from_user.id, default_answer.LOAD_RESULT)
+    if user.user.command == default_answer.BESTDEAL[1:]:
         response_hotels = request_bestdeal(call)
     else:
         response_hotels = request_property_list(call)
@@ -261,12 +261,12 @@ def request_hotels(call: CallbackQuery, response_hotels: Response) -> None:
     if check_status_code(response_hotels):
         DataBaseModel.insert_user(user.get_tuple())
         result_hotels = json.loads(response_hotels.text)['data']['body']['searchResults']['results']
-        if user.user.command == commands.BESTDEAL[1:]:
+        if user.user.command == default_answer.BESTDEAL[1:]:
             result_hotels = bestdeal.bestdeal_logic(call, result_hotels, result=[])
             if result_hotels is False:
-                bot.send_message(call.from_user.id, commands.NOT_FOUND)
+                bot.send_message(call.from_user.id, default_answer.NOT_FOUND)
                 bot_message = bot.send_message(
-                    call.from_user.id, commands.HELP_MESSAGE, reply_markup=keyboard_commands(commands.HELP)
+                    call.from_user.id, default_answer.HELP_MESSAGE, reply_markup=keyboard_commands(default_answer.HELP)
                 )
                 user.edit('bot_message', bot_message)
             else:
@@ -274,9 +274,9 @@ def request_hotels(call: CallbackQuery, response_hotels: Response) -> None:
         else:
             showing_hotels(call, result_hotels)
     else:
-        bot.send_message(call.from_user.id, commands.REQUEST_ERROR)
+        bot.send_message(call.from_user.id, default_answer.REQUEST_ERROR)
         bot_message = bot.send_message(
-            call.from_user.id, commands.INSTRUCTION, reply_markup=keyboard_commands(call.data)
+            call.from_user.id, default_answer.INSTRUCTION, reply_markup=keyboard_commands(call.data)
         )
         user.edit('bot_message', bot_message)
 
@@ -295,9 +295,9 @@ def showing_hotels(call: CallbackQuery, result_hotels: Any) -> None:
     index = 0
     for hotel in result_hotels:
         if index == user.user.count_hotel:
-            bot.send_message(call.from_user.id, commands.SEARCH_RESULT)
+            bot.send_message(call.from_user.id, default_answer.SEARCH_RESULT)
             bot_message = bot.send_message(
-                call.from_user.id, commands.INSTRUCTION, reply_markup=keyboard_commands(call.data)
+                call.from_user.id, default_answer.INSTRUCTION, reply_markup=keyboard_commands(call.data)
             )
             user.set_default()
             user.edit('bot_message', bot_message)
@@ -328,7 +328,7 @@ def hotel_template(call: CallbackQuery, currency: str, days: int, hotel: Dict) -
     logger.info(str(call.from_user.id))
     try:
         hotel_show = locale_choice(call)
-        link = settings.URL_HOTEL.format(hotel['id'])
+        link = api_settings.URL_HOTEL.format(hotel['id'])
         if currency == 'USD':
             price = int(hotel['ratePlan']['price']['current'][1:])
             cur_sym = '$'
@@ -363,9 +363,9 @@ def locale_choice(call: CallbackQuery) -> str:
     """
     logger.info(str(call.from_user.id))
     if user.user.locale == 'en_US':
-        hotel_show = commands.HOTEL_SHOW_EN
+        hotel_show = default_answer.HOTEL_SHOW_EN
     else:
-        hotel_show = commands.HOTEL_SHOW_RU
+        hotel_show = default_answer.HOTEL_SHOW_RU
     return hotel_show
 
 @exception_handler
