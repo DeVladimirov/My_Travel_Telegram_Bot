@@ -4,7 +4,7 @@ from loader import bot, logger
 from database.models import user
 from keyboards.inline.keyboard import keyboard_commands
 from handlers.default_handlers import lowprice_highprice, history
-from states import default_answer
+from config_data import default_answer
 
 
 @bot.message_handler(commands=default_answer.COMMAND)
@@ -60,14 +60,17 @@ def echo_handler(message: Message) -> None:
     """
     logger.info(str(message.from_user.id))
     message_text = message.text.lower()
-    if message_text.startswith(default_answer.WELCOME_LIST[0]) or message_text.startswith(default_answer.WELCOME_LIST[1]):
+    if message_text.startswith(default_answer.WELCOME_LIST[0]) or message_text.startswith(
+            default_answer.WELCOME_LIST[1]):
         bot.send_message(message.from_user.id, default_answer.WELCOME.format(message.from_user.first_name))
         bot_message = bot.send_message(message.from_user.id, default_answer.INSTRUCTION)
         user.edit('bot_message', bot_message)
-    elif message_text.startswith(default_answer.WELCOME_LIST[2]) or message_text.startswith(default_answer.WELCOME_LIST[3]):
+    elif message_text.startswith(default_answer.WELCOME_LIST[2]) or message_text.startswith(
+            default_answer.WELCOME_LIST[3]):
         bot.send_message(message.from_user.id, default_answer.HOW_ARE_YOU_ANSWER)
         bot.register_next_step_handler(message, find_a_hotel)
-    elif message_text.startswith(default_answer.WELCOME_LIST[4]) or message_text.startswith(default_answer.WELCOME_LIST[5]):
+    elif message_text.startswith(default_answer.WELCOME_LIST[4]) or message_text.startswith(
+            default_answer.WELCOME_LIST[5]):
         bot.send_message(message.from_user.id, default_answer.GOODBYE_MESSAGE)
         bot_message = bot.send_message(message.from_user.id, default_answer.INSTRUCTION)
         user.edit('bot_message', bot_message)

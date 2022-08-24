@@ -4,11 +4,11 @@ from typing import Callable
 from requests import ReadTimeout
 from log_config import cust_logger
 from database.models import user
-from states import default_answer
+from config_data import default_answer
 from config_data import api_settings
 
 storage = StateMemoryStorage()
-bot = TeleBot(token=api_settings.BOT_TOKEN, state_storage=storage)
+bot = TeleBot(token=api_settings.TOKEN, state_storage=storage)
 logger = cust_logger('bot_logger')
 
 def exception_handler(func: Callable) -> Callable:

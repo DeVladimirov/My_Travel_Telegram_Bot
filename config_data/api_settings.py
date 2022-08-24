@@ -10,7 +10,7 @@ if not find_dotenv():
 else:
     load_dotenv()
 
-BOT_TOKEN = os.getenv('BOT_TOKEN')
+TOKEN = os.getenv('BOT_TOKEN')
 RAPID_API_KEY = os.getenv('RAPID_API_KEY')
 
 URL_SEARCH = 'https://hotels4.p.rapidapi.com/locations/v2/search'

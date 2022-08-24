@@ -1,10 +1,12 @@
 import requests
+import re
 import string
+from typing import Union, Any, Dict, Optional, List, Tuple
 from requests import Response
 from telebot.types import Message, CallbackQuery
 from database.models import user
 from loader import logger, exception_request_handler
-from states import default_answer
+from config_data import default_answer
 from config_data.api_settings import QUERY_SEARCH, URL_SEARCH, HEADERS, QUERY_PROPERTY_LIST, URL_PROPERTY_LIST, QUERY_PHOTO, \
     URL_PHOTO, QUERY_BESTDEAL
 

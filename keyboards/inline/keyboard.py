@@ -2,7 +2,7 @@
 from typing import List
 from telebot.types import InlineKeyboardMarkup
 from keyboards import keyboards_text
-from states import default_answer
+from config_data import default_answer
 from telebot import types
 
 

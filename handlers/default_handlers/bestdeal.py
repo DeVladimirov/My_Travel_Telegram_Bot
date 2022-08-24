@@ -4,11 +4,12 @@ from typing import List, Dict, Union
 from telebot.types import Message, CallbackQuery
 from database.models import user
 from loader import bot, logger, exception_handler
-from states import default_answer
 from req_api.api_req import request_bestdeal
 from .lowprice_highprice import count_hotel
 from .start_help import start_bot_com
-from config_data import api_settings
+from config_data import api_settings, default_answer
+
+
 @exception_handler
 def price_min(message: Message) -> None:
     """

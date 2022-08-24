@@ -8,14 +8,15 @@ from datetime import datetime
 from keyboards.inline.keyboard import keyboard_commands
 from loader import bot, logger, exception_handler
 from database.models import user, DataBaseModel, Hotel
-from states import default_answer
 from . import bestdeal
 from req_api.api_req import request_search, request_property_list, request_get_photo, request_bestdeal
 from keyboards import keyboards_text
 from keyboards.inline import keyboard, calendar
 from telebot.types import CallbackQuery, InputMediaPhoto, Message
 from .start_help import start_bot_com, check_state_inline_keyboard
-from config_data import api_settings
+from config_data import api_settings, default_answer
+from req_api.funcs import *
+
 @exception_handler
 def record_command(message: Union[Message, CallbackQuery]) -> None:
     """
@@ -67,25 +68,7 @@ def search_city(message: Message) -> None:
     else:
         response = request_search(message)
         if check_status_code(response):
-            pattern_city_group = r'(?<="CITY_GROUP",).+?[\]]'
-            find_cities = re.findall(pattern_city_group, response.text)
-            for i in range(len(find_cities)):
-                if len(find_cities[i]) > 20:
-                    pattern_dest = r'(?<="destinationId":")\d+'
-                    destination = re.findall(pattern_dest, find_cities[0])
-                    pattern_city = r'(?<="name":")\w+[\s, \w]\w+'
-                    city = re.findall(pattern_city, find_cities[0])
-                    city_list = list(zip(destination, city))
-                    bot_message = bot.send_message(
-                        message.from_user.id, default_answer.CORRECTION, reply_markup=keyboard.keyboards_city(city_list)
-                    )
-                    user.edit('bot_message', bot_message)
-                else:
-                    bot.send_message(message.from_user.id, default_answer.INCORRECT_CITY)
-                    choice_city(message)
-        else:
-            bot.send_message(message.from_user.id, default_answer.REQUEST_ERROR)
-            choice_city(message)
+            cities = found_city(list)
 
 @bot.callback_query_handler(func=lambda call: call.data.isdigit())
 @exception_handler
