@@ -18,9 +18,10 @@ from handlers.default_handlers import lowprice_highprice
 
 
 @exception_handler
-def found_city(call: CallbackQuery) -> list:
+def found_city(message: Message) -> list:
+    response = request_search(message)
     pattern_city_group = r'(?<="CITY_GROUP",).+?[\]]'
-    find_cities = re.findall(pattern_city_group, lowprice_highprice.response.text)
+    find_cities = re.findall(pattern_city_group, response.text)
     for i in range(len(find_cities)):
         if len(find_cities[i]) > 20:
             pattern_dest = r'(?<="destinationId":")\d+'
