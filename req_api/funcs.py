@@ -29,4 +29,4 @@ def found_city(message: Message) -> list:
             pattern_city = r'(?<="name":")\w+[\s, \w]\w+'
             city = re.findall(pattern_city, find_cities[0])
             city_list = list(zip(destination, city))
-    return city_list
+            return city_list
