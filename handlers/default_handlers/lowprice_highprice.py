@@ -69,7 +69,7 @@ def search_city(message: Message) -> None:
         response = request_search(message)
         if check_status_code(response):
             cities = found_city(message)
-            bot.register_next_step_handler(message, callback_city)
+            callback_city(cities)
 
 @bot.callback_query_handler(func=lambda call: call.data.isdigit())
 @exception_handler

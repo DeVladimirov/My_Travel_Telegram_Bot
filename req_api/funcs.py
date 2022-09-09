@@ -18,7 +18,7 @@ from handlers.default_handlers import lowprice_highprice
 
 
 @exception_handler
-def found_city(message: Message) -> list:
+def found_city(message: Message, *args, **kwargs) -> list:
     response = request_search(message)
     pattern_city_group = r'(?<="CITY_GROUP",).+?[\]]'
     find_cities = re.findall(pattern_city_group, response.text)
