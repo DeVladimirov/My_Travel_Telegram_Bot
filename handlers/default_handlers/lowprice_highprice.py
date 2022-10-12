@@ -308,6 +308,7 @@ def showing_hotels(call: CallbackQuery, result_hotels: Any) -> None:
     """
     logger.info(str(call.from_user.id))
     index = 0
+
     for hotel in result_hotels:
         if index == user.user.count_hotel:
             bot.send_message(call.from_user.id, default_answer.SEARCH_RESULT)
@@ -321,14 +322,14 @@ def showing_hotels(call: CallbackQuery, result_hotels: Any) -> None:
             hotel_show = hotel_template(
                 call=call, currency=user.user.currency, days=user.user.day_period, hotel=hotel
             )
-            if hotel_show is not None:
-                index += 1
-                user_hotel = Hotel(call.from_user.id, hotel_show)
-                if user.user.count_photo != 0:
-                    showing_hotels_with_photo(call, hotel, hotel_show, user_hotel)
-                else:
-                    DataBaseModel.insert_hotel(user_hotel)
-                    bot.send_message(call.from_user.id, hotel_show, parse_mode='Markdown')
+        if hotel_show is not None:
+            index += 1
+            user_hotel = Hotel(call.from_user.id, hotel_show)
+            if user.user.count_photo != 0:
+                showing_hotels_with_photo(call, hotel, hotel_show, user_hotel)
+            else:
+                DataBaseModel.insert_hotel(user_hotel)
+                bot.send_message(call.from_user.id, hotel_show, parse_mode='Markdown')
 
 def hotel_template(call: CallbackQuery, currency: str, days: int, hotel: Dict) -> Optional[str]:
     """
